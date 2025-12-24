@@ -45,30 +45,6 @@ external_links:
   warn_external: false
   new_tab: true
 
-# Collections for navigation
-collections:
-  modules:
-    permalink: "/:collection/:path/"
-    output: true
-  projects:
-    permalink: "/:collection/:path/"
-    output: true
-
-# Default front matter
-defaults:
-  - scope:
-      path: "modules"
-      type: "pages"
-    values:
-      layout: default
-      parent: Modules
-  - scope:
-      path: "projects"
-      type: "pages"
-    values:
-      layout: default
-      parent: Projects
-
 # Plugins
 plugins:
   - jekyll-seo-tag
