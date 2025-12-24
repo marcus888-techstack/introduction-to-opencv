@@ -69,12 +69,12 @@ Build these 6 real-world applications:
 
 | Session | Project | What You'll Build |
 |:--------|:--------|:------------------|
-| 1-2 | [Document Scanner]({{ site.baseurl }}/projects/01-document-scanner) | Edge detection, perspective transform, OCR |
-| 1-2 | [Face Attendance]({{ site.baseurl }}/projects/02-face-attendance) | Face detection & recognition system |
-| 3-4 | [License Plate Recognition]({{ site.baseurl }}/projects/03-license-plate) | ANPR for parking/security systems |
-| 3-4 | [Object Counting]({{ site.baseurl }}/projects/04-object-counting) | People/vehicle tracking & analytics |
-| 5-6 | [Quality Inspection]({{ site.baseurl }}/projects/05-quality-inspection) | Industrial defect detection |
-| 5-6 | [Gesture Control]({{ site.baseurl }}/projects/06-gesture-control) | Touchless presentation control |
+| 1-2 | [Document Scanner](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/projects/01_document_scanner/README.md) | Edge detection, perspective transform, OCR |
+| 1-2 | [Face Attendance](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/projects/02_face_attendance/README.md) | Face detection & recognition system |
+| 3-4 | [License Plate Recognition](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/projects/03_license_plate/README.md) | ANPR for parking/security systems |
+| 3-4 | [Object Counting](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/projects/04_object_counting/README.md) | People/vehicle tracking & analytics |
+| 5-6 | [Quality Inspection](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/projects/05_quality_inspection/README.md) | Industrial defect detection |
+| 5-6 | [Gesture Control](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/projects/06_gesture_control/README.md) | Touchless presentation control |
 
 ---
 
