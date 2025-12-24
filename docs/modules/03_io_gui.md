@@ -3,6 +3,7 @@ layout: default
 title: "03: I/O & GUI"
 parent: Modules
 nav_order: 3
+permalink: /modules/03-io-gui
 ---
 
 # Module 3: I/O and GUI

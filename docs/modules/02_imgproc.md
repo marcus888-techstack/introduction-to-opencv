@@ -3,6 +3,7 @@ layout: default
 title: "02: Image Processing"
 parent: Modules
 nav_order: 2
+permalink: /modules/02-imgproc
 ---
 
 # Module 2: Image Processing

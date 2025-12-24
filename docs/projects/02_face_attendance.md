@@ -3,6 +3,7 @@ layout: default
 title: "02: Face Attendance"
 parent: Projects
 nav_order: 2
+permalink: /projects/02-face-attendance
 ---
 
 # Project 2: Face Recognition Attendance System

@@ -3,6 +3,7 @@ layout: default
 title: "11: Stitching"
 parent: Modules
 nav_order: 11
+permalink: /modules/11-stitching
 ---
 
 # Module 11: Image Stitching

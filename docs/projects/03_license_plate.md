@@ -3,6 +3,7 @@ layout: default
 title: "03: License Plate"
 parent: Projects
 nav_order: 3
+permalink: /projects/03-license-plate
 ---
 
 # Project 3: License Plate Recognition (ANPR)

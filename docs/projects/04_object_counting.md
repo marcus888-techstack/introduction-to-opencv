@@ -3,6 +3,7 @@ layout: default
 title: "04: Object Counting"
 parent: Projects
 nav_order: 4
+permalink: /projects/04-object-counting
 ---
 
 # Project 4: Real-Time Object Counting & Tracking

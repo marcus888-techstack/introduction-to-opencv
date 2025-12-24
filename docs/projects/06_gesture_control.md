@@ -3,6 +3,7 @@ layout: default
 title: "06: Gesture Control"
 parent: Projects
 nav_order: 6
+permalink: /projects/06-gesture-control
 ---
 
 # Project 6: Gesture-Controlled Presentation System

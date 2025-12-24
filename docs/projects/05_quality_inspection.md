@@ -3,6 +3,7 @@ layout: default
 title: "05: Quality Inspection"
 parent: Projects
 nav_order: 5
+permalink: /projects/05-quality-inspection
 ---
 
 # Project 5: AI-Powered Quality Inspection System

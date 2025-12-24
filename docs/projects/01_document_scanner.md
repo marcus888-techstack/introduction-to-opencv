@@ -3,6 +3,7 @@ layout: default
 title: "01: Document Scanner"
 parent: Projects
 nav_order: 1
+permalink: /projects/01-document-scanner
 ---
 
 # Project 1: Smart Document Scanner with OCR

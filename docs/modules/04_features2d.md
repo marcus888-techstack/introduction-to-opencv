@@ -3,6 +3,7 @@ layout: default
 title: "04: Features2D"
 parent: Modules
 nav_order: 4
+permalink: /modules/04-features2d
 ---
 
 # Module 4: Features2D

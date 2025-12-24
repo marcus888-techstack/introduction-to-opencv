@@ -3,6 +3,7 @@ layout: default
 title: "06: Video Analysis"
 parent: Modules
 nav_order: 6
+permalink: /modules/06-video
 ---
 
 # Module 6: Video Analysis

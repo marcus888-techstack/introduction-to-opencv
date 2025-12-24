@@ -3,6 +3,7 @@ layout: default
 title: "01: Core"
 parent: Modules
 nav_order: 1
+permalink: /modules/01-core
 ---
 
 # Module 1: Core Functionality

@@ -3,6 +3,7 @@ layout: default
 title: "07: Camera Calibration"
 parent: Modules
 nav_order: 7
+permalink: /modules/07-calib3d
 ---
 
 # Module 7: Camera Calibration

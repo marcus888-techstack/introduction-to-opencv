@@ -3,6 +3,7 @@ layout: default
 title: "05: Object Detection"
 parent: Modules
 nav_order: 5
+permalink: /modules/05-objdetect
 ---
 
 # Module 5: Object Detection

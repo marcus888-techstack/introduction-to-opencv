@@ -3,6 +3,7 @@ layout: default
 title: "Extras"
 parent: Modules
 nav_order: 12
+permalink: /modules/extras
 ---
 
 # Extra Modules: Advanced Topics

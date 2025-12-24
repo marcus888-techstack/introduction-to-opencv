@@ -3,6 +3,7 @@ layout: default
 title: "10: Photo"
 parent: Modules
 nav_order: 10
+permalink: /modules/10-photo
 ---
 
 # Module 10: Computational Photography

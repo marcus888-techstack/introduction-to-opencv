@@ -3,6 +3,7 @@ layout: default
 title: "08: Deep Learning"
 parent: Modules
 nav_order: 8
+permalink: /modules/08-dnn
 ---
 
 # Module 8: Deep Learning (DNN)
