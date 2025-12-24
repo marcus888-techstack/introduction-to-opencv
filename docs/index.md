@@ -86,23 +86,23 @@ The curriculum covers all major OpenCV modules with **20+ hands-on tutorials**:
 
 | Module | Topics | Key Algorithms |
 |:-------|:-------|:---------------|
-| [Core]({{ site.baseurl }}/modules/01-core) | Arrays, operations, pixels | NumPy integration, bitwise ops |
-| [Image Processing]({{ site.baseurl }}/modules/02-imgproc) | Filtering, morphology, edges | Gaussian blur, Canny, contours |
-| [I/O & GUI]({{ site.baseurl }}/modules/03-io-gui) | Read/write, video, events | imread, VideoCapture, trackbars |
-| [Features2D]({{ site.baseurl }}/modules/04-features2d) | Detection, matching | ORB, SIFT, FLANN, homography |
-| [Object Detection]({{ site.baseurl }}/modules/05-objdetect) | Haar cascades, templates | Face detection, template matching |
-| [Video Analysis]({{ site.baseurl }}/modules/06-video) | Optical flow, tracking | Lucas-Kanade, background subtraction |
+| [Core](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/01_core/README.md) | Arrays, operations, pixels | NumPy integration, bitwise ops |
+| [Image Processing](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/02_imgproc/README.md) | Filtering, morphology, edges | Gaussian blur, Canny, contours |
+| [I/O & GUI](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/03_io_gui/README.md) | Read/write, video, events | imread, VideoCapture, trackbars |
+| [Features2D](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/04_features2d/README.md) | Detection, matching | ORB, SIFT, FLANN, homography |
+| [Object Detection](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/05_objdetect/README.md) | Haar cascades, templates | Face detection, template matching |
+| [Video Analysis](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/06_video/README.md) | Optical flow, tracking | Lucas-Kanade, background subtraction |
 
 ### Advanced Modules
 
 | Module | Topics | Key Algorithms |
 |:-------|:-------|:---------------|
-| [Camera Calibration]({{ site.baseurl }}/modules/07-calib3d) | 3D geometry, calibration | Undistortion, perspective transform |
-| [Deep Learning]({{ site.baseurl }}/modules/08-dnn) | Neural networks | Model loading, blob, inference |
-| [Machine Learning]({{ site.baseurl }}/modules/09-ml) | Traditional ML | KNN, SVM, K-Means |
-| [Photo]({{ site.baseurl }}/modules/10-photo) | Enhancement | Inpainting, HDR, denoising |
-| [Stitching]({{ site.baseurl }}/modules/11-stitching) | Panoramas | Feature alignment, blending |
-| [Extras]({{ site.baseurl }}/modules/extras) | Face, tracking, OCR | LBPH, KCF, Tesseract |
+| [Camera Calibration](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/07_calib3d/README.md) | 3D geometry, calibration | Undistortion, perspective transform |
+| [Deep Learning](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/08_dnn/README.md) | Neural networks | Model loading, blob, inference |
+| [Machine Learning](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/09_ml/README.md) | Traditional ML | KNN, SVM, K-Means |
+| [Photo](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/10_photo/README.md) | Enhancement | Inpainting, HDR, denoising |
+| [Stitching](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/11_stitching/README.md) | Panoramas | Feature alignment, blending |
+| [Extras](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/extras/README.md) | Face, tracking, OCR | LBPH, KCF, Tesseract |
 
 ---
 

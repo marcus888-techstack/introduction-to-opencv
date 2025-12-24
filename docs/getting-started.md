@@ -238,4 +238,5 @@ Week 4: Projects
 
 Ready to start learning? Begin with the first module:
 
-[Start with Core Operations]({{ site.baseurl }}/modules/01-core){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 }
+[Start with Core Operations](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/01_core/README.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 }
+[View All Modules]({{ site.baseurl }}/modules){: .btn .btn-outline .fs-5 .mb-4 .mb-md-0 }
