@@ -1,0 +1,563 @@
+# Module 9: Machine Learning
+
+Traditional machine learning algorithms in OpenCV for classification, regression, and clustering.
+
+## Topics Covered
+
+- K-Nearest Neighbors (KNN)
+- Support Vector Machines (SVM)
+- K-Means clustering
+- Decision Trees
+- Model persistence
+
+---
+
+## Algorithm Explanations
+
+### 1. K-Nearest Neighbors (KNN)
+
+**What it does**: Classifies samples based on the majority vote of K nearest training samples.
+
+**KNN Classification Visualization**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    K-Nearest Neighbors (K=3)                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│         Class A (●)         Class B (○)                            │
+│                                                                     │
+│              ●                                                      │
+│                    ○                        ○                       │
+│         ●               ╭─────╮                                    │
+│                        ╱   ●   ╲      New point: ★                │
+│              ○       ╱    ★    ╲                                   │
+│                     │      ○    │     Find 3 nearest neighbors     │
+│         ●          │     ●      │     • 2 are ●(Class A)           │
+│                      ╲         ╱      • 1 is ○(Class B)            │
+│                        ╲     ╱        Majority vote → Class A      │
+│              ○           ╰───╯                                      │
+│                                   ○                                 │
+│         ●                                                           │
+│                                                                     │
+│   No training phase! Just store training data and compute at       │
+│   prediction time (lazy learning)                                  │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Effect of K Value**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    K Value Selection                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   K = 1 (sensitive)           K = 15 (smooth)                      │
+│                                                                     │
+│   ┌───────────────┐           ┌───────────────┐                    │
+│   │ ●  ○  ●  ●   │           │ ●  ●  ●  ●   │                    │
+│   │    ╭──╮      │           │ ─────────────│                    │
+│   │ ●  │○ │ ○    │    vs     │ ●  ●  ●  ●   │                    │
+│   │    ╰──╯      │           │ ──────────── │                    │
+│   │ ●  ●  ○  ○   │           │ ○  ○  ○  ○   │                    │
+│   └───────────────┘           └───────────────┘                    │
+│   Very noisy boundary         Smooth boundary                      │
+│   Overfits to noise           May underfit                         │
+│                                                                     │
+│   Tip: Use odd K to avoid ties in binary classification            │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Distance Metric** (Euclidean):
+```
+d(x, y) = √Σᵢ(xᵢ - yᵢ)²
+```
+
+**Algorithm**:
+```
+1. For a new sample x:
+   a. Calculate distance to all training samples
+   b. Select K nearest neighbors
+   c. Assign class by majority vote (classification)
+      or average (regression)
+```
+
+**Weighted KNN**:
+```
+Weight = 1 / distance
+
+Prediction = Σ(weight × class) / Σ(weight)
+```
+
+**OpenCV**:
+```python
+knn = cv2.ml.KNearest_create()
+knn.train(train_data, cv2.ml.ROW_SAMPLE, labels)
+
+ret, results, neighbors, dist = knn.findNearest(test_data, k=5)
+```
+
+**Returns**:
+| Value | Description |
+|-------|-------------|
+| `results` | Predicted labels |
+| `neighbors` | Labels of K nearest neighbors |
+| `dist` | Distances to K neighbors |
+
+**Parameter Selection**:
+- Small K: More sensitive to noise
+- Large K: Smoother decision boundary
+- Typical values: 3, 5, 7 (odd numbers avoid ties)
+
+---
+
+### 2. Support Vector Machines (SVM)
+
+**What it does**: Finds the optimal hyperplane that separates classes with maximum margin.
+
+**SVM Maximum Margin Concept**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    SVM: Maximum Margin Classifier                   │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Bad Boundary           Better Boundary        Optimal (SVM)      │
+│                                                                     │
+│   ●  ●  │  ○  ○          ●  ●  │  ○  ○         ●  ●  ┃  ○  ○      │
+│   ●  ●  │  ○  ○          ●  ●  │  ○  ○         ●  ●  ┃  ○  ○      │
+│   ●  ●  │  ○  ○          ●  ●   │  ○  ○        ●  ●  ┃  ○  ○      │
+│   ●  ●  │  ○  ○          ●  ●    │  ○  ○       ●  ●  ┃  ○  ○      │
+│   ●  ●  │  ○  ○          ●  ●      │  ○  ○     ●  ●  ┃  ○  ○      │
+│         │                         │                  ┃              │
+│   Separates but          Separates               Maximum           │
+│   narrow margin          good margin             margin!           │
+│                                                                     │
+│                         ◀──margin──▶                               │
+│                         ●          ○  ← Support vectors            │
+│                         ┃──────────┃    (points closest to         │
+│                                         the boundary)              │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Kernel Trick Visualization**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    The Kernel Trick                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Not linearly separable (2D)      Linearly separable (3D)        │
+│                                                                     │
+│   ○ ○ ○ ○ ○ ○ ○                              ○ ○ ○ ○               │
+│   ○ ○ ●●●●● ○ ○      Kernel               ╱─────────╲              │
+│   ○ ○ ●●●●● ○ ○     ─────────▶          ╱     ●●●    ╲            │
+│   ○ ○ ●●●●● ○ ○    φ(x) maps          ╱      ●●●     ╲           │
+│   ○ ○ ○ ○ ○ ○ ○    to higher dim      ○ ○ ○ ●●● ○ ○ ○            │
+│                                                                     │
+│   Can't draw a line              Now can use a hyperplane!        │
+│   to separate ● from ○                                             │
+│                                                                     │
+│   RBF Kernel: Projects to infinite dimensional space               │
+│   Computes dot products without explicit transformation            │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Decision Function**:
+```
+f(x) = sign(wᵀx + b)
+
+Where:
+  w = weight vector (normal to hyperplane)
+  b = bias
+  x = input sample
+```
+
+**Optimization Objective**:
+```
+Minimize: ½||w||² + C × Σᵢ ξᵢ
+
+Subject to: yᵢ(wᵀxᵢ + b) ≥ 1 - ξᵢ
+
+Where:
+  C = penalty parameter (regularization)
+  ξᵢ = slack variables (allow misclassification)
+```
+
+**Kernel Functions**:
+| Kernel | Formula | Use Case |
+|--------|---------|----------|
+| Linear | K(u,v) = uᵀv | Linearly separable |
+| Polynomial | K(u,v) = (γuᵀv + r)^d | Polynomial boundaries |
+| RBF | K(u,v) = exp(-γ‖u-v‖²) | General purpose |
+| Sigmoid | K(u,v) = tanh(γuᵀv + r) | Neural network-like |
+
+**RBF Kernel** (most common):
+```
+K(x, x') = exp(-γ × ||x - x'||²)
+
+γ = 1 / (2σ²)
+
+Higher γ → narrower influence, more complex boundary
+Lower γ → smoother boundary
+```
+
+**OpenCV**:
+```python
+svm = cv2.ml.SVM_create()
+svm.setType(cv2.ml.SVM_C_SVC)
+svm.setKernel(cv2.ml.SVM_RBF)
+svm.setC(1.0)        # Regularization
+svm.setGamma(0.5)    # Kernel coefficient
+
+svm.train(train_data, cv2.ml.ROW_SAMPLE, labels)
+_, prediction = svm.predict(test_data)
+```
+
+**SVM Types**:
+| Type | Description |
+|------|-------------|
+| `SVM_C_SVC` | C-Support Vector Classification |
+| `SVM_NU_SVC` | Nu-Support Vector Classification |
+| `SVM_ONE_CLASS` | One-class SVM (anomaly detection) |
+| `SVM_EPS_SVR` | Epsilon-Support Vector Regression |
+| `SVM_NU_SVR` | Nu-Support Vector Regression |
+
+---
+
+### 3. K-Means Clustering
+
+**What it does**: Partitions N samples into K clusters, minimizing within-cluster variance.
+
+**K-Means Algorithm Steps**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    K-Means Clustering (K=3)                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Step 1: Initialize        Step 2: Assign          Step 3: Update │
+│   random centroids          to nearest centroid     centroids       │
+│                                                                     │
+│    ●    ●   ●               ●    ●   ●              ●    ●   ●     │
+│       ★                     ─────★──────             ────★─────    │
+│    ●    ●                   ●    ●                   ●    ●        │
+│                                                                     │
+│         ●    ●                   ●    ●                  ●    ●    │
+│    ★                        ─────★───────            ────★─────    │
+│    ●         ●              ●         ●              ●         ●   │
+│                                                                     │
+│              ★                        ★                      ★     │
+│    ●    ●   ●               ●    ●   ●              ●    ●   ●     │
+│                             ──────────★              ─────────★    │
+│                                                                     │
+│   ★ = centroid              Lines show               ★ moves to    │
+│   ● = data point            assignments              cluster mean  │
+│                                                                     │
+│   Repeat Steps 2-3 until centroids don't change                    │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Choosing K (Elbow Method)**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Elbow Method for K Selection                     │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Compactness                                                       │
+│   (within-cluster                                                   │
+│   variance)                                                         │
+│        │                                                            │
+│   1000 │●                                                          │
+│        │  ╲                                                         │
+│    800 │   ●                                                       │
+│        │    ╲                                                       │
+│    600 │     ●                                                     │
+│        │      ╲                                                     │
+│    400 │       ● ← "Elbow" here! Choose K=4                        │
+│        │         ──●───●───●───●───●                               │
+│    200 │                                                           │
+│        │                                                            │
+│        └────────────────────────────────────────────────           │
+│              1  2  3  4  5  6  7  8  9  K                          │
+│                                                                     │
+│   After the elbow, adding more clusters gives diminishing returns  │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Objective Function** (minimize):
+```
+J = Σₖ Σₓ∈Cₖ ||x - μₖ||²
+
+Where:
+  Cₖ = set of points in cluster k
+  μₖ = centroid of cluster k
+```
+
+**Lloyd's Algorithm**:
+```
+1. Initialize K centroids randomly
+2. Repeat until convergence:
+   a. Assignment: Assign each point to nearest centroid
+      cᵢ = argminₖ ||xᵢ - μₖ||²
+
+   b. Update: Recalculate centroids
+      μₖ = (1/|Cₖ|) × Σₓ∈Cₖ x
+
+3. Convergence: Centroids don't change
+```
+
+**K-Means++ Initialization**:
+```
+1. Choose first centroid randomly from data
+2. For each remaining centroid:
+   a. Calculate D(x)² = min distance² to existing centroids
+   b. Choose next centroid with probability ∝ D(x)²
+```
+
+**OpenCV**:
+```python
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
+
+compactness, labels, centers = cv2.kmeans(
+    data,                      # Input data (float32)
+    K,                         # Number of clusters
+    None,                      # Output labels
+    criteria,                  # Termination criteria
+    attempts=10,               # Number of attempts
+    flags=cv2.KMEANS_PP_CENTERS  # Initialization method
+)
+```
+
+**Flags**:
+| Flag | Description |
+|------|-------------|
+| `KMEANS_RANDOM_CENTERS` | Random initialization |
+| `KMEANS_PP_CENTERS` | K-means++ (recommended) |
+| `KMEANS_USE_INITIAL_LABELS` | Use provided labels |
+
+**Returns**:
+- `compactness`: Sum of squared distances to centers (lower = better)
+- `labels`: Cluster assignment for each point
+- `centers`: Coordinates of cluster centroids
+
+**Choosing K** (Elbow Method):
+```
+Plot compactness vs K
+Choose K at "elbow" where improvement slows
+```
+
+---
+
+### 4. Decision Trees
+
+**What it does**: Recursively splits data based on feature thresholds.
+
+**Decision Tree Structure**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Decision Tree Visualization                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│                     ┌───────────────┐                               │
+│                     │  Size > 100?  │ ← Root node                  │
+│                     └───────┬───────┘                               │
+│                  ┌──────────┴──────────┐                            │
+│              Yes │                     │ No                         │
+│                  ▼                     ▼                            │
+│         ┌───────────────┐     ┌───────────────┐                    │
+│         │  Color = Red? │     │  Weight > 50? │                    │
+│         └───────┬───────┘     └───────┬───────┘                    │
+│              ┌──┴──┐               ┌──┴──┐                          │
+│          Yes │     │ No        Yes │     │ No                       │
+│              ▼     ▼               ▼     ▼                          │
+│           [Apple] [Grape]      [Orange] [Cherry]                   │
+│                                         ↑                          │
+│                                    Leaf nodes                       │
+│                                    (predictions)                    │
+│                                                                     │
+│   Each internal node: feature comparison                           │
+│   Each leaf node: class prediction                                 │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Decision Boundary**:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Decision Tree Boundary                           │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Feature Y                                                         │
+│        │                                                            │
+│      8 │ ○  ○  ○ │ ●  ●  ●  ●  ●                                  │
+│        │ ○  ○  ○ │ ●  ●  ●  ●  ●                                  │
+│      6 │─────────┼───────────────── y = 5                          │
+│        │ ○  ○  ○ │ ●  ●  ○  ○  ○                                  │
+│      4 │ ○  ○  ○ │────────┼──────── y = 3.5                        │
+│        │ ○  ○  ○ │ ●  ●  │●  ●  ●                                 │
+│      2 │ ○  ○  ○ │ ●  ●  │●  ●  ●                                 │
+│        └─────────┴────────┴──────────                              │
+│              2    4   x=4  6   x=6.5  8  Feature X                 │
+│                                                                     │
+│   Decision trees create axis-aligned splits (rectangles)          │
+│   Each split is parallel to one axis                               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Splitting Criterion** (Information Gain):
+```
+IG(S, A) = H(S) - Σᵥ (|Sᵥ|/|S|) × H(Sᵥ)
+
+Where:
+  H(S) = entropy of set S
+  A = attribute to split on
+  Sᵥ = subset where attribute = v
+```
+
+**Entropy**:
+```
+H(S) = -Σᵢ pᵢ × log₂(pᵢ)
+
+Where pᵢ = proportion of class i in S
+```
+
+**Gini Impurity** (alternative):
+```
+Gini(S) = 1 - Σᵢ pᵢ²
+```
+
+**Algorithm (ID3/CART)**:
+```
+1. If all samples have same label: return leaf node
+2. If no more features: return majority class
+3. Select best splitting feature (highest IG)
+4. For each value of feature:
+   a. Create child node
+   b. Recursively build subtree
+5. Return tree
+```
+
+**OpenCV**:
+```python
+dtree = cv2.ml.DTrees_create()
+dtree.setMaxDepth(5)           # Maximum tree depth
+dtree.setMinSampleCount(5)     # Min samples for split
+dtree.setCVFolds(0)            # Cross-validation folds
+
+dtree.train(train_data, cv2.ml.ROW_SAMPLE, labels)
+_, prediction = dtree.predict(test_data)
+```
+
+**Parameters**:
+| Parameter | Description |
+|-----------|-------------|
+| `MaxDepth` | Maximum depth (prevents overfitting) |
+| `MinSampleCount` | Minimum samples to split a node |
+| `MaxCategories` | Maximum categories for clustering |
+| `Use1SERule` | Use 1-standard-error rule for pruning |
+| `TruncatePrunedTree` | Remove pruned nodes |
+
+---
+
+### 5. Model Persistence
+
+**Saving and Loading**:
+```python
+# Save model
+svm.save('svm_model.xml')
+
+# Load model
+loaded_svm = cv2.ml.SVM_load('svm_model.xml')
+
+# Using FileStorage
+fs = cv2.FileStorage('model.yml', cv2.FILE_STORAGE_WRITE)
+svm.write(fs)
+fs.release()
+
+# Load from FileStorage
+fs = cv2.FileStorage('model.yml', cv2.FILE_STORAGE_READ)
+loaded_svm = cv2.ml.SVM_create()
+loaded_svm.read(fs.getNode('opencv_ml_svm'))
+fs.release()
+```
+
+---
+
+### 6. Data Preparation
+
+**OpenCV ML Data Format**:
+```python
+# Features: (N samples, D features), float32
+X = np.array([[...], [...], ...], dtype=np.float32)
+
+# Labels: (N samples,), int32 for classification
+y = np.array([0, 1, 0, ...], dtype=np.int32)
+
+# Layout flag
+cv2.ml.ROW_SAMPLE  # Each row is a sample
+cv2.ml.COL_SAMPLE  # Each column is a sample
+```
+
+**Normalization**:
+```python
+# Min-Max scaling to [0, 1]
+X_norm = (X - X.min()) / (X.max() - X.min())
+
+# Z-score normalization
+X_std = (X - X.mean()) / X.std()
+```
+
+---
+
+## Algorithm Comparison
+
+| Algorithm | Type | Speed | Accuracy | Interpretable | Use Case |
+|-----------|------|-------|----------|---------------|----------|
+| KNN | Classification | Fast | Medium | Yes | Small datasets |
+| SVM | Classification | Medium | High | No | High-dimensional |
+| Decision Tree | Classification | Fast | Medium | Yes | Feature importance |
+| K-Means | Clustering | Fast | - | Yes | Grouping data |
+| Random Forest | Classification | Medium | High | Medium | General purpose |
+
+---
+
+## Tutorial Files
+
+| File | Description |
+|------|-------------|
+| `01_ml_basics.py` | KNN, SVM, K-Means, Decision Trees |
+
+---
+
+## Key Functions Reference
+
+| Function | Description |
+|----------|-------------|
+| `cv2.ml.KNearest_create()` | Create KNN classifier |
+| `cv2.ml.SVM_create()` | Create SVM classifier |
+| `cv2.ml.DTrees_create()` | Create Decision Tree |
+| `cv2.kmeans()` | K-Means clustering |
+| `model.train()` | Train model |
+| `model.predict()` | Make predictions |
+| `model.save()` | Save model to file |
+| `cv2.ml.SVM_load()` | Load SVM model |
+
+---
+
+## Parameter Tuning Tips
+
+1. **KNN**: Start with k=5, use cross-validation
+2. **SVM**: Use grid search for C and gamma
+3. **Decision Trees**: Limit depth to prevent overfitting
+4. **K-Means**: Run multiple times, use elbow method
+
+---
+
+## Further Reading
+
+- [OpenCV ML Tutorial](https://docs.opencv.org/4.x/d6/de2/tutorial_py_table_of_contents_ml.html)
+- [SVM Tutorial](https://docs.opencv.org/4.x/d1/d73/tutorial_introduction_to_svm.html)
+- [K-Means Tutorial](https://docs.opencv.org/4.x/d1/d5c/tutorial_py_kmeans_opencv.html)
