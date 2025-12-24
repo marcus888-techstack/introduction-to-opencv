@@ -2,7 +2,6 @@
 layout: default
 title: Modules
 nav_order: 3
-has_children: true
 permalink: /modules
 ---
 
@@ -11,6 +10,8 @@ permalink: /modules
 
 Comprehensive curriculum covering all major OpenCV modules with 20+ hands-on tutorials.
 {: .fs-6 .fw-300 }
+
+[View Curriculum on GitHub](https://github.com/marcus888-techstack/introduction-to-opencv/tree/main/curriculum){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
@@ -47,42 +48,59 @@ Comprehensive curriculum covering all major OpenCV modules with 20+ hands-on tut
 
 ## Core Modules (Week 1-2)
 
-| Module | Topics | Tutorials |
-|:-------|:-------|:----------|
-| [01 Core]({{ site.baseurl }}/modules/01-core) | Arrays, pixel access, arithmetic, bitwise | 1 |
-| [02 Image Processing]({{ site.baseurl }}/modules/02-imgproc) | Filtering, morphology, edges, histograms | 4 |
-| [03 I/O & GUI]({{ site.baseurl }}/modules/03-io-gui) | Image/video I/O, windows, events | 3 |
-| [04 Features2D]({{ site.baseurl }}/modules/04-features2d) | Corners, descriptors, matching | 3 |
-| [05 Object Detection]({{ site.baseurl }}/modules/05-objdetect) | Haar cascades, template matching | 2 |
-| [06 Video Analysis]({{ site.baseurl }}/modules/06-video) | Optical flow, background subtraction | 2 |
+| Module | Topics | README |
+|:-------|:-------|:-------|
+| **01: Core** | Arrays, pixel access, arithmetic, bitwise operations | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/01_core/README.md) |
+| **02: Image Processing** | Filtering, morphology, edges, histograms, color spaces | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/02_imgproc/README.md) |
+| **03: I/O & GUI** | Image/video I/O, windows, trackbars, drawing | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/03_io_gui/README.md) |
+| **04: Features2D** | Corner detection, descriptors, feature matching | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/04_features2d/README.md) |
+| **05: Object Detection** | Haar cascades, HOG, template matching | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/05_objdetect/README.md) |
+| **06: Video Analysis** | Optical flow, background subtraction, tracking | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/06_video/README.md) |
 
 ---
 
 ## Advanced Modules (Week 3-4)
 
-| Module | Topics | Tutorials |
-|:-------|:-------|:----------|
-| [07 Camera Calibration]({{ site.baseurl }}/modules/07-calib3d) | Calibration, undistortion, perspective | 1 |
-| [08 Deep Learning]({{ site.baseurl }}/modules/08-dnn) | Model loading, blob, inference | 1 |
-| [09 Machine Learning]({{ site.baseurl }}/modules/09-ml) | KNN, SVM, K-Means, Decision Trees | 1 |
-| [10 Photo]({{ site.baseurl }}/modules/10-photo) | Inpainting, HDR, denoising, cloning | 1 |
-| [11 Stitching]({{ site.baseurl }}/modules/11-stitching) | Panorama creation, blending | 1 |
-| [Extras]({{ site.baseurl }}/modules/extras) | Face recognition, tracking, OCR | 3 |
+| Module | Topics | README |
+|:-------|:-------|:-------|
+| **07: Camera Calibration** | Intrinsics, distortion correction, perspective transform | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/07_calib3d/README.md) |
+| **08: Deep Learning** | Model loading, blob preparation, inference | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/08_dnn/README.md) |
+| **09: Machine Learning** | KNN, SVM, K-Means, Decision Trees | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/09_ml/README.md) |
+| **10: Photo** | Inpainting, HDR, denoising, seamless cloning | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/10_photo/README.md) |
+| **11: Stitching** | Panorama creation, homography, blending | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/11_stitching/README.md) |
 
 ---
 
-## Key Functions Summary
+## Extra Modules
+
+| Module | Topics | README |
+|:-------|:-------|:-------|
+| **Face Recognition** | LBPH, EigenFace, FisherFace algorithms | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/extras/README.md) |
+| **Object Tracking** | KCF, CSRT, MOSSE trackers | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/extras/README.md) |
+| **OCR Integration** | Tesseract, EasyOCR integration | [View README](https://github.com/marcus888-techstack/introduction-to-opencv/blob/main/curriculum/extras/README.md) |
+
+---
+
+## Key Functions Reference
 
 | Module | Key Functions |
 |:-------|:--------------|
-| Core | `np.zeros`, `cv2.add`, `cv2.bitwise_and` |
-| ImgProc | `cv2.blur`, `cv2.Canny`, `cv2.findContours` |
-| I/O | `cv2.imread`, `cv2.VideoCapture` |
-| Features | `cv2.ORB_create`, `cv2.BFMatcher` |
-| ObjDetect | `CascadeClassifier`, `cv2.matchTemplate` |
-| Video | `cv2.calcOpticalFlowPyrLK`, `MOG2` |
-| Calib3D | `cv2.calibrateCamera`, `cv2.warpPerspective` |
+| Core | `np.zeros`, `cv2.add`, `cv2.bitwise_and`, `cv2.split`, `cv2.merge` |
+| ImgProc | `cv2.blur`, `cv2.Canny`, `cv2.findContours`, `cv2.threshold` |
+| I/O & GUI | `cv2.imread`, `cv2.VideoCapture`, `cv2.createTrackbar` |
+| Features2D | `cv2.ORB_create`, `cv2.SIFT_create`, `cv2.BFMatcher` |
+| ObjDetect | `CascadeClassifier`, `cv2.matchTemplate`, `cv2.HOGDescriptor` |
+| Video | `cv2.calcOpticalFlowPyrLK`, `cv2.createBackgroundSubtractorMOG2` |
+| Calib3D | `cv2.calibrateCamera`, `cv2.undistort`, `cv2.warpPerspective` |
 | DNN | `cv2.dnn.readNet`, `cv2.dnn.blobFromImage` |
-| ML | `cv2.ml.KNearest_create`, `cv2.kmeans` |
-| Photo | `cv2.inpaint`, `cv2.seamlessClone` |
-| Stitching | `cv2.Stitcher_create` |
+| ML | `cv2.ml.KNearest_create`, `cv2.kmeans`, `cv2.ml.SVM_create` |
+| Photo | `cv2.inpaint`, `cv2.seamlessClone`, `cv2.fastNlMeansDenoising` |
+| Stitching | `cv2.Stitcher_create`, `cv2.detail.MultiBandBlender` |
+
+---
+
+## PDF Teaching Materials
+
+Each module has a corresponding PDF guide for in-depth study:
+
+[View All Teaching Materials]({{ site.baseurl }}/teaching-materials){: .btn .btn-outline .fs-5 .mb-4 .mb-md-0 }
