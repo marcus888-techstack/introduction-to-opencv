@@ -15,14 +15,49 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 5: Template Matching")
 print("=" * 60)
 
 
-def create_test_images():
-    """Create test image and template."""
+def load_template_matching_images():
+    """Load real images for template matching or create fallback."""
+    # Try to load real images - OpenCV provides lena.jpg + lena_tmpl.jpg for template matching
+    main_img = get_image("lena.jpg")
+    template_img = get_image("lena_tmpl.jpg")
+
+    if main_img is not None and template_img is not None:
+        print("Using sample images: lena.jpg and lena_tmpl.jpg")
+        return main_img, template_img
+
+    # Try alternative - use templ.png with fruits.jpg or other images
+    fruits = get_image("fruits.jpg")
+    if fruits is not None:
+        print("Using sample image: fruits.jpg with extracted template")
+        h, w = fruits.shape[:2]
+        # Create a template from a portion of the image (extract an orange)
+        template = fruits[50:120, 50:120].copy()
+        return fruits, template
+
+    # Try sudoku for digit matching
+    sudoku = get_image("sudoku.png")
+    if sudoku is not None:
+        print("Using sample image: sudoku.png with extracted template")
+        # Create a template from a portion of the image
+        template = sudoku[50:100, 50:100].copy()
+        return sudoku, template
+
+    # Fallback: Create synthetic test images
+    print("No sample image found. Using synthetic image.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+
     # Main image with multiple shapes
     img = np.zeros((400, 600, 3), dtype=np.uint8)
     img[:] = (50, 50, 50)
@@ -62,7 +97,7 @@ def create_test_images():
     return img, template
 
 
-img, template = create_test_images()
+img, template = load_template_matching_images()
 gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray_template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
 

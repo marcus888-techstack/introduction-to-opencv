@@ -14,14 +14,60 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 11: Image Stitching")
 print("=" * 60)
 
 
-def create_test_images():
-    """Create overlapping images for stitching demo."""
+def load_stitching_images():
+    """Load real images for stitching or create synthetic fallback."""
+    # Try to load panorama sample images
+    # OpenCV provides: Blender_Suzanne1.jpg/2.jpg, graf1.png/graf3.png for stitching
+    # Also leuvenA.jpg/leuvenB.jpg are overlapping viewpoint images
+    img1 = get_image("Blender_Suzanne1.jpg")
+    img2 = get_image("Blender_Suzanne2.jpg")
+
+    if img1 is not None and img2 is not None:
+        print("Using sample images: Blender_Suzanne1.jpg and Blender_Suzanne2.jpg")
+        h = min(img1.shape[0], img2.shape[0])
+        img1 = cv2.resize(img1, (350, h))
+        img2 = cv2.resize(img2, (350, h))
+        full_scene = np.hstack([img1, img2])
+        return [img1, img2], full_scene
+
+    # Try graf images (graffiti - standard stitching benchmark)
+    graf1 = get_image("graf1.png")
+    graf3 = get_image("graf3.png")
+    if graf1 is not None and graf3 is not None:
+        print("Using sample images: graf1.png and graf3.png")
+        h = min(graf1.shape[0], graf3.shape[0])
+        graf1 = cv2.resize(graf1, (350, h))
+        graf3 = cv2.resize(graf3, (350, h))
+        full_scene = np.hstack([graf1, graf3])
+        return [graf1, graf3], full_scene
+
+    # Try with building or newspaper (feature-rich images)
+    building = get_image("building.jpg")
+    if building is not None:
+        print("Using sample image: building.jpg (split into parts)")
+        h, w = building.shape[:2]
+        # Split into overlapping parts
+        part1 = building[:, :int(w*0.5)].copy()
+        part2 = building[:, int(w*0.3):int(w*0.7)].copy()
+        part3 = building[:, int(w*0.5):].copy()
+        return [part1, part2, part3], building
+
+    # Fallback: Create synthetic overlapping images
+    print("No sample images found. Using synthetic scene.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+
     # Create a wide scene
     full_scene = np.zeros((300, 800, 3), dtype=np.uint8)
 
@@ -49,7 +95,7 @@ def create_test_images():
     return [img1, img2, img3], full_scene
 
 
-images, full_scene = create_test_images()
+images, full_scene = load_stitching_images()
 print(f"Created {len(images)} overlapping images")
 for i, img in enumerate(images):
     print(f"  Image {i+1}: {img.shape}")

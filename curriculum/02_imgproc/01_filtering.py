@@ -16,39 +16,58 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 2: Image Processing - Filtering")
 print("=" * 60)
 
 
-def create_noisy_image():
-    """Create an image with noise for testing filters."""
-    # Create gradient image
-    img = np.zeros((300, 400, 3), dtype=np.uint8)
+def load_and_add_noise(filename="lena.jpg"):
+    """Load real image and add noise for filter testing."""
+    # Try to load sample image
+    img = get_image(filename)
 
-    # Add gradient
-    for i in range(400):
-        img[:, i] = (i * 255 // 400, 128, 255 - i * 255 // 400)
+    if img is None:
+        # Try alternative images
+        for alt in ["baboon.jpg", "fruits.jpg", "building.jpg"]:
+            img = get_image(alt)
+            if img is not None:
+                print(f"Using sample image: {alt}")
+                break
 
-    # Add shapes
-    cv2.circle(img, (200, 150), 60, (0, 255, 255), -1)
-    cv2.rectangle(img, (50, 50), (150, 100), (255, 0, 0), -1)
+    if img is None:
+        # Final fallback: create synthetic image
+        print("No sample images found. Using synthetic image.")
+        print("Run: python curriculum/sample_data/download_samples.py")
+        img = np.zeros((300, 400, 3), dtype=np.uint8)
+        for i in range(400):
+            img[:, i] = (i * 255 // 400, 128, 255 - i * 255 // 400)
+        cv2.circle(img, (200, 150), 60, (0, 255, 255), -1)
+    else:
+        print(f"Using sample image: {filename}")
+        # Resize for consistent demo
+        img = cv2.resize(img, (400, 300))
 
     # Add salt and pepper noise
     noise = np.random.random(img.shape[:2])
-    img[noise < 0.02] = 0    # Pepper
-    img[noise > 0.98] = 255  # Salt
+    img[noise < 0.02] = 0      # Pepper
+    img[noise > 0.98] = 255    # Salt
 
     # Add Gaussian noise
-    gaussian_noise = np.random.normal(0, 25, img.shape).astype(np.int16)
+    gaussian_noise = np.random.normal(0, 15, img.shape).astype(np.int16)
     img = np.clip(img.astype(np.int16) + gaussian_noise, 0, 255).astype(np.uint8)
 
     return img
 
 
-# Create test image
-original = create_noisy_image()
+# Load test image with noise
+original = load_and_add_noise()
 
 
 # =============================================================================

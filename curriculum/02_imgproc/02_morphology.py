@@ -17,35 +17,49 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image, SAMPLE_DIR
 
 print("=" * 60)
 print("Module 2: Morphological Operations")
 print("=" * 60)
 
 
-def create_test_image():
-    """Create image with text and shapes for morphology demo."""
+def load_sample_image():
+    """Load real sample image for morphology demo."""
+    # Try to load the "j.png" sample (letter J, ideal for morphology)
+    img = get_image("j.png", cv2.IMREAD_GRAYSCALE)
+
+    if img is not None:
+        print("Using sample image: j.png")
+        return img
+
+    # Fallback: try sudoku or text image
+    img = get_image("imageTextN.png", cv2.IMREAD_GRAYSCALE)
+    if img is not None:
+        _, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
+        print("Using sample image: imageTextN.png")
+        return img
+
+    # Final fallback: create synthetic image
+    print("No sample images found. Using synthetic image.")
+    print("Run: python curriculum/sample_data/download_samples.py")
     img = np.zeros((300, 500), dtype=np.uint8)
-
-    # Add text
     cv2.putText(img, "OpenCV", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, 255, 3)
-
-    # Add shapes
     cv2.circle(img, (400, 80), 40, 255, -1)
     cv2.rectangle(img, (350, 150), (450, 250), 255, -1)
 
-    # Add some noise (small dots)
+    # Add noise
     noise = np.random.random(img.shape) > 0.995
     img[noise] = 255
-
-    # Add some gaps (small black dots)
-    gaps = np.random.random(img.shape) > 0.998
-    img[gaps] = 0
-
     return img
 
 
-original = create_test_image()
+original = load_sample_image()
 
 
 # =============================================================================

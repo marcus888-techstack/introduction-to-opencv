@@ -12,6 +12,12 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Extra Module: Text Detection and OCR")
@@ -55,8 +61,19 @@ print(overview)
 print("\n--- 2. Creating Test Image ---")
 
 
-def create_text_image():
-    """Create image with text for OCR demo."""
+def load_text_image():
+    """Load a real image with text for OCR demo or create fallback."""
+    # Try to load real images with text
+    # OpenCV samples: imageTextN.png, imageTextR.png (text), licenseplate_motion.jpg, sudoku.png
+    for sample in ["imageTextN.png", "imageTextR.png", "licenseplate_motion.jpg", "sudoku.png", "text_defocus.jpg"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            return cv2.resize(img, (600, 400))
+
+    # Fallback: Create image with text
+    print("No sample text image found. Using synthetic text image.")
+    print("Run: python curriculum/sample_data/download_samples.py")
     img = np.ones((400, 600, 3), dtype=np.uint8) * 240
 
     # Add text with various styles
@@ -78,7 +95,7 @@ def create_text_image():
     return img
 
 
-text_img = create_text_image()
+text_img = load_text_image()
 
 
 # =============================================================================

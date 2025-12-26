@@ -47,7 +47,7 @@ green_img[:] = (0, 255, 0)
 
 # Create grayscale image
 gray_img = np.zeros((300, 400), dtype=np.uint8)  # 2D, no channels
-gray_img[:] = 128  # Mid-gray
+gray_img[:] = 128  # Mid-gray (128, 128, 128)
 
 
 # =============================================================================
@@ -164,7 +164,8 @@ color_img[:, :, 1] = 128  # Green channel
 color_img[:, :, 2] = 64   # Red channel
 
 # Split into separate channels
-b, g, r = cv2.split(color_img)
+b, g, r = cv2.split(color_img) # cv: b,g,r = (100,100) => b (100,100,1) = color_img[:, :, 0] 
+print(f"size by using numpy:{color_img[:,:,0].shape}")
 print(f"Blue channel shape: {b.shape}")
 print(f"Blue value: {b[0, 0]}, Green value: {g[0, 0]}, Red value: {r[0, 0]}")
 

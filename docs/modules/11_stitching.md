@@ -464,7 +464,10 @@ stitcher.setSeamEstimationResol(0.1)
 
 | File | Description |
 |------|-------------|
-| `01_panorama.py` | Stitcher API, manual pipeline, blending |
+| `01_panorama.py` | High-level Stitcher API, basic manual stitch |
+| `02_manual_stitching.py` | Step-by-step pipeline: features, matching, RANSAC, warping |
+| `03_blending_techniques.py` | Blending comparison: none, alpha, feather, multi-band |
+| `04_cylindrical_pano.py` | Cylindrical/spherical projections, wide panoramas |
 
 ---
 
@@ -474,11 +477,18 @@ stitcher.setSeamEstimationResol(0.1)
 |----------|-------------|
 | `cv2.Stitcher_create()` | Create stitcher object |
 | `stitcher.stitch()` | Stitch images |
-| `cv2.findHomography()` | Compute homography matrix |
+| `cv2.SIFT_create()` | SIFT feature detector |
+| `cv2.ORB_create()` | ORB feature detector (faster) |
+| `cv2.BFMatcher()` | Brute-force feature matcher |
+| `cv2.FlannBasedMatcher()` | Fast approximate matcher |
+| `cv2.drawMatches()` | Visualize feature matches |
+| `cv2.findHomography()` | Compute homography with RANSAC |
 | `cv2.warpPerspective()` | Apply perspective transform |
 | `cv2.perspectiveTransform()` | Transform points |
-| `cv2.detail.MultiBandBlender()` | Multi-band blender |
-| `cv2.detail.FeatherBlender()` | Feather blender |
+| `cv2.pyrDown()` / `cv2.pyrUp()` | Build image pyramids |
+| `cv2.detail.MultiBandBlender()` | Multi-band (best quality) |
+| `cv2.detail.FeatherBlender()` | Distance-weighted blending |
+| `cv2.PyRotationWarper()` | Cylindrical/spherical projection |
 
 ---
 

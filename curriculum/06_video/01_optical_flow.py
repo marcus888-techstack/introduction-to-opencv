@@ -14,14 +14,48 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_video
 
 print("=" * 60)
 print("Module 6: Optical Flow")
 print("=" * 60)
 
 
+def load_video_frames():
+    """Load two consecutive frames from a real video, or create synthetic frames."""
+    # Try to load sample video
+    for video_name in ["vtest.avi", "slow_traffic_small.mp4"]:
+        video_path = get_video(video_name)
+        if os.path.exists(video_path):
+            cap = cv2.VideoCapture(video_path)
+            if cap.isOpened():
+                ret1, frame1 = cap.read()
+                # Skip a few frames for visible motion
+                for _ in range(5):
+                    cap.read()
+                ret2, frame2 = cap.read()
+                cap.release()
+
+                if ret1 and ret2:
+                    print(f"Using sample video: {video_name}")
+                    # Resize for consistent display
+                    frame1 = cv2.resize(frame1, (600, 400))
+                    frame2 = cv2.resize(frame2, (600, 400))
+                    return frame1, frame2
+
+    # Fallback to synthetic
+    print("No sample video found. Using synthetic frames.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+    return create_test_frames()
+
+
 def create_test_frames():
-    """Create two frames with motion for testing."""
+    """Create two frames with motion for testing (fallback)."""
     # Frame 1
     frame1 = np.zeros((400, 600, 3), dtype=np.uint8)
     frame1[:] = (50, 50, 50)
@@ -43,7 +77,7 @@ def create_test_frames():
     return frame1, frame2
 
 
-frame1, frame2 = create_test_frames()
+frame1, frame2 = load_video_frames()
 gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
 gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
 

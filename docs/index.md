@@ -17,6 +17,18 @@ A hands-on OpenCV course with 6 practical, real-world projects for intermediate 
 
 ---
 
+## Quick Navigation
+
+| Section | Description |
+|:--------|:------------|
+| [Getting Started]({{ site.baseurl }}/getting-started) | Installation and setup guide |
+| [Learning Modules]({{ site.baseurl }}/modules) | 20+ curriculum tutorials |
+| [Applications]({{ site.baseurl }}/applications) | 14 ready-to-run demos |
+| [Projects]({{ site.baseurl }}/projects) | 6 complete projects |
+| [Teaching Materials]({{ site.baseurl }}/teaching-materials) | PDF guides for offline study |
+
+---
+
 ## Course Overview
 
 This course teaches computer vision through **hands-on projects**. Instead of just learning theory, you'll build real applications that solve practical problems.
@@ -78,6 +90,26 @@ Build these 6 real-world applications:
 
 ---
 
+## Ready-to-Run Applications
+
+In addition to projects, explore **14 standalone applications** that demonstrate specific techniques:
+
+| Level | Applications |
+|:------|:-------------|
+| **Beginner** | Document Scanner, Color Tracker, Real-time Filters, Face Blur, Object Counter |
+| **Intermediate** | Motion Alarm, QR/Barcode Reader, Lane Detection, Watermarking, Color Palette |
+| **Advanced** | ArUco Markers, Hand Gesture, Virtual Background, Panorama Stitcher |
+
+[View All Applications]({{ site.baseurl }}/applications){: .btn .btn-outline .fs-5 .mb-4 .mb-md-0 }
+
+Each application includes:
+- Interactive mode with webcam
+- Demo mode with sample images
+- Documented keyboard controls
+- Links to official OpenCV documentation
+
+---
+
 ## Learning Modules
 
 The curriculum covers all major OpenCV modules with **20+ hands-on tutorials**:
@@ -116,8 +148,14 @@ cd introduction-to-opencv
 # Install dependencies
 pip install -r requirements.txt
 
+# Download sample images (recommended)
+python curriculum/sample_data/download_samples.py
+
 # Run a tutorial
 python curriculum/01_core/01_basics.py
+
+# Run an application
+python curriculum/applications/07_qr_barcode_reader.py
 
 # Run a project
 python projects/01_document_scanner/main.py

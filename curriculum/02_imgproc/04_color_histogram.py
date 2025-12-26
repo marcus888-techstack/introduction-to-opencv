@@ -15,14 +15,37 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 2: Color Spaces and Histograms")
 print("=" * 60)
 
 
+def load_color_image():
+    """Load a real colorful image, or create one if not available."""
+    # Try to load colorful sample images
+    for sample in ["fruits.jpg", "lena.jpg", "baboon.jpg"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            # Resize for consistent display
+            img = cv2.resize(img, (400, 300))
+            return img
+
+    # Fallback to synthetic
+    print("No color sample found. Using synthetic image.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+    return create_color_image()
+
+
 def create_color_image():
-    """Create a colorful test image."""
+    """Create a colorful test image (fallback)."""
     img = np.zeros((300, 400, 3), dtype=np.uint8)
 
     # Gradient background
@@ -39,7 +62,7 @@ def create_color_image():
     return img
 
 
-original = create_color_image()
+original = load_color_image()
 
 
 # =============================================================================

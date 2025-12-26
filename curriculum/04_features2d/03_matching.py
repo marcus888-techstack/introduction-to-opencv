@@ -15,41 +15,68 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 4: Feature Matching")
 print("=" * 60)
 
 
-def create_test_images():
-    """Create two related images for matching demo."""
-    # Original image
+def load_matching_images():
+    """Load real images for feature matching demo."""
+    # Try to load box.png and box_in_scene.png (ideal for matching)
+    img1 = get_image("box.png")
+    img2 = get_image("box_in_scene.png")
+
+    if img1 is not None and img2 is not None:
+        print("Using sample images: box.png, box_in_scene.png")
+        return img1, img2
+
+    # Alternative: use any image and create transformed version
+    for sample in ["lena.jpg", "building.jpg", "fruits.jpg"]:
+        img1 = get_image(sample)
+        if img1 is not None:
+            print(f"Using sample image: {sample} (with transformation)")
+            img1 = cv2.resize(img1, (400, 300))
+
+            # Create transformed version
+            center = (200, 150)
+            M = cv2.getRotationMatrix2D(center, 15, 0.9)
+            img2 = cv2.warpAffine(img1, M, (400, 300))
+
+            # Add slight noise
+            noise = np.random.normal(0, 5, img2.shape).astype(np.int16)
+            img2 = np.clip(img2.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+
+            return img1, img2
+
+    # Final fallback: create synthetic images
+    print("No sample images found. Using synthetic images.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+
     img1 = np.zeros((300, 400, 3), dtype=np.uint8)
     cv2.rectangle(img1, (50, 50), (200, 200), (255, 255, 255), 2)
     cv2.circle(img1, (300, 150), 50, (255, 255, 255), 2)
     cv2.putText(img1, "TEST", (100, 130), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (200, 200, 200), 3)
 
-    # Add texture for better matching
     for i in range(10):
         x = np.random.randint(50, 350)
         y = np.random.randint(50, 250)
         cv2.circle(img1, (x, y), 5, (150, 150, 150), -1)
 
-    # Transformed image (rotated and scaled)
     center = (200, 150)
-    angle = 15
-    scale = 0.9
-    M = cv2.getRotationMatrix2D(center, angle, scale)
+    M = cv2.getRotationMatrix2D(center, 15, 0.9)
     img2 = cv2.warpAffine(img1, M, (400, 300))
-
-    # Add some noise
-    noise = np.random.normal(0, 10, img2.shape).astype(np.int16)
-    img2 = np.clip(img2.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
     return img1, img2
 
 
-img1, img2 = create_test_images()
+img1, img2 = load_matching_images()
 gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 

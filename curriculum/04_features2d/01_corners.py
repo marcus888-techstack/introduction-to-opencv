@@ -14,14 +14,37 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 4: Corner Detection")
 print("=" * 60)
 
 
+def load_corner_image():
+    """Load a real image with corners, or create one if not available."""
+    # Try to load images good for corner detection
+    for sample in ["chessboard.png", "building.jpg", "sudoku.png"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            # Resize for consistent display
+            img = cv2.resize(img, (500, 400))
+            return img
+
+    # Fallback to synthetic
+    print("No corner sample found. Using synthetic shapes.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+    return create_test_image()
+
+
 def create_test_image():
-    """Create image with corners for testing."""
+    """Create image with corners for testing (fallback)."""
     img = np.zeros((400, 500, 3), dtype=np.uint8)
     img[:] = (50, 50, 50)
 
@@ -47,7 +70,7 @@ def create_test_image():
     return img
 
 
-original = create_test_image()
+original = load_corner_image()
 gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
 
 

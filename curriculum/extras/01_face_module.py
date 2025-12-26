@@ -15,6 +15,11 @@ Topics Covered:
 import cv2
 import numpy as np
 import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Extra Module: Face Recognition")
@@ -61,8 +66,19 @@ Usage:
 print(dnn_info)
 
 
-def create_face_image():
-    """Create synthetic face-like image for demo."""
+def load_face_image():
+    """Load a real face image for demo or create synthetic fallback."""
+    # Try to load real face images
+    # OpenCV samples: lena.jpg (classic face), messi5.jpg (Messi face image)
+    for sample in ["lena.jpg", "messi5.jpg"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            return cv2.resize(img, (300, 300))
+
+    # Fallback: Create synthetic face-like image
+    print("No sample face image found. Using synthetic face.")
+    print("Run: python curriculum/sample_data/download_samples.py")
     img = np.zeros((300, 300, 3), dtype=np.uint8)
     img[:] = (200, 180, 160)
 
@@ -89,7 +105,7 @@ def create_face_image():
     return img
 
 
-face_img = create_face_image()
+face_img = load_face_image()
 
 
 # =============================================================================

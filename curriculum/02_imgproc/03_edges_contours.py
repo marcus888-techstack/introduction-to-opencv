@@ -15,14 +15,37 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 2: Edges and Contours")
 print("=" * 60)
 
 
+def load_edge_image():
+    """Load a real image for edge detection, or create one if not available."""
+    # Try to load sample images good for edge detection
+    for sample in ["building.jpg", "sudoku.png", "lena.jpg"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            # Resize for consistent display
+            img = cv2.resize(img, (600, 400))
+            return img
+
+    # Fallback to synthetic
+    print("No sample image found. Using synthetic shapes.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+    return create_test_image()
+
+
 def create_test_image():
-    """Create image with shapes for edge/contour testing."""
+    """Create image with shapes for edge/contour testing (fallback)."""
     img = np.zeros((400, 600, 3), dtype=np.uint8)
     img[:] = (50, 50, 50)
 
@@ -48,7 +71,7 @@ def create_test_image():
     return img
 
 
-original = create_test_image()
+original = load_edge_image()
 gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
 
 

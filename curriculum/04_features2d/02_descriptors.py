@@ -15,14 +15,31 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 4: Feature Descriptors")
 print("=" * 60)
 
 
-def create_test_image():
-    """Create a test image with features."""
+def load_feature_test_image():
+    """Load a real image for feature detection or create fallback."""
+    # Try to load real images - prefer images with good texture/features
+    # OpenCV samples: box.png (feature detection), building.jpg (texture), graf1.png (benchmark)
+    for sample in ["box.png", "box_in_scene.png", "building.jpg", "graf1.png", "blox.jpg", "baboon.jpg"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            return cv2.resize(img, (500, 400))
+
+    # Fallback: Create synthetic test image
+    print("No sample image found. Using synthetic image.")
+    print("Run: python curriculum/sample_data/download_samples.py")
     img = np.zeros((400, 500, 3), dtype=np.uint8)
 
     # Background texture
@@ -53,7 +70,7 @@ def create_test_image():
     return img
 
 
-original = create_test_image()
+original = load_feature_test_image()
 gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
 
 

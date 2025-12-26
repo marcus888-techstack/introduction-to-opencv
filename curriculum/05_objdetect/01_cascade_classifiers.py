@@ -16,6 +16,11 @@ Topics Covered:
 import cv2
 import numpy as np
 import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 5: Cascade Classifiers")
@@ -73,42 +78,44 @@ eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml
 
 
 # =============================================================================
-# 2. CREATE TEST IMAGE
+# 2. LOAD TEST IMAGE
 # =============================================================================
-print("\n--- 2. Test Image ---")
+def load_face_image():
+    """Load image with faces for detection demo."""
+    # Try sample images with faces
+    for sample in ["lena.jpg", "lena_face.jpg"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            return img
 
+    # Try local file
+    if os.path.exists("face.png"):
+        img = cv2.imread("face.png")
+        if img is not None:
+            print("Using local image: face.png")
+            return img
 
-def create_face_like_image():
-    """Create a simple face-like image for testing."""
-    img = np.zeros((400, 400, 3), dtype=np.uint8)
-    img[:] = (200, 180, 160)  # Skin-like color
+    # Try webcam capture
+    print("No face image found. Trying webcam...")
+    cap = cv2.VideoCapture(0)
+    if cap.isOpened():
+        ret, frame = cap.read()
+        cap.release()
+        if ret:
+            print("Using webcam capture")
+            return frame
 
-    # Face oval
-    cv2.ellipse(img, (200, 200), (120, 150), 0, 0, 360, (180, 160, 140), -1)
-
-    # Eyes
-    cv2.ellipse(img, (150, 160), (25, 15), 0, 0, 360, (255, 255, 255), -1)
-    cv2.ellipse(img, (250, 160), (25, 15), 0, 0, 360, (255, 255, 255), -1)
-
-    # Pupils
-    cv2.circle(img, (150, 160), 10, (50, 50, 50), -1)
-    cv2.circle(img, (250, 160), 10, (50, 50, 50), -1)
-
-    # Nose
-    pts = np.array([[200, 180], [185, 230], [215, 230]], np.int32)
-    cv2.fillPoly(img, [pts], (170, 150, 130))
-
-    # Mouth
-    cv2.ellipse(img, (200, 280), (40, 20), 0, 0, 180, (150, 100, 100), -1)
-
-    # Eyebrows
-    cv2.line(img, (120, 130), (180, 135), (100, 80, 60), 3)
-    cv2.line(img, (220, 135), (280, 130), (100, 80, 60), 3)
-
+    # Final fallback: create placeholder
+    print("No image source available.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+    img = np.zeros((300, 400, 3), dtype=np.uint8)
+    cv2.putText(img, "No face image", (50, 150),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     return img
 
 
-test_img = create_face_like_image()
+test_img = load_face_image()
 gray = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
 
 

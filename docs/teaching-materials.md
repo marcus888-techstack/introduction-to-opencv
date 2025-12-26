@@ -26,11 +26,11 @@ These professionally formatted PDF documents provide in-depth coverage of each t
 | **04: Features2D** | [Feature Matching Pipeline]({{ site.baseurl }}/teaching_materials/04-feature-matching.pdf) | SIFT, ORB, feature matching, homography |
 | **05: Object Detection** | [Object Detection Toolkit]({{ site.baseurl }}/teaching_materials/05-object-detection.pdf) | Haar cascades, HOG, template matching |
 | **06: Video Analysis** | [Video Motion Analysis]({{ site.baseurl }}/teaching_materials/06-video-analysis.pdf) | Optical flow, background subtraction, tracking |
-| **07: Camera Calibration** | [Camera Calibration Mastery]({{ site.baseurl }}/teaching_materials/07-camera-calibration.pdf) | Intrinsics, distortion, perspective transform |
-| **08: Deep Learning** | [DNN Inference Mastery]({{ site.baseurl }}/teaching_materials/08-deep-learning-inference.pdf) | Model loading, blob preparation, inference |
-| **09: Machine Learning** | [ML Developer Toolkit]({{ site.baseurl }}/teaching_materials/09-machine-learning.pdf) | KNN, SVM, K-Means, Decision Trees |
-| **10: Photo** | [Computational Photography]({{ site.baseurl }}/teaching_materials/10-computational-photography.pdf) | Inpainting, HDR, denoising, seamless cloning |
-| **11: Stitching** | [Image Stitching Engine]({{ site.baseurl }}/teaching_materials/11-image-stitching.pdf) | Panoramas, homography, blending techniques |
+| **07: Machine Learning** | [Machine Learning]({{ site.baseurl }}/teaching_materials/07-machine-learning.pdf) | KNN, SVM, K-Means, Decision Trees |
+| **08: Deep Learning** | [Deep Learning]({{ site.baseurl }}/teaching_materials/08-deep-learning.pdf) | Model loading, blob preparation, inference |
+| **09: Multi-Object Tracking** | [Multi-Object Tracking]({{ site.baseurl }}/teaching_materials/09-multi-object-tracking.pdf) | MOT, MCMOT, person Re-ID |
+| **10: 3D Vision** | [3D Vision]({{ site.baseurl }}/teaching_materials/10-3d-vision.pdf) | Calibration, stereo, 3D reconstruction, SfM |
+| **11: Stitching** | [Image Stitching]({{ site.baseurl }}/teaching_materials/11-image-stitching.pdf) | Panoramas, homography, blending, projections |
 
 ---
 
@@ -54,11 +54,11 @@ For beginners, we recommend following this sequence:
 4. Feature Matching Pipeline   → Explore feature detection
 5. Object Detection Toolkit    → Build detection systems
 6. Video Motion Analysis       → Work with video streams
-7. Camera Calibration Mastery  → Understand 3D geometry
-8. DNN Inference Mastery       → Use deep learning models
-9. ML Developer Toolkit        → Apply classical ML
-10. Computational Photography  → Enhance images
-11. Image Stitching Engine     → Create panoramas
+7. OpenCV Vision Algorithms    → Apply classical ML
+8. DNN From Model To Magic     → Use deep learning models
+9. Multi-Camera Tracking       → MOT and Re-ID systems
+10. 3D Vision Fundamentals     → Camera calibration & 3D
+11. Image Stitching Mastered   → Create panoramas
 ```
 
 ---
@@ -75,11 +75,11 @@ curriculum/
 ├── 04_features2d/    → 04-feature-matching.pdf
 ├── 05_objdetect/     → 05-object-detection.pdf
 ├── 06_video/         → 06-video-analysis.pdf
-├── 07_calib3d/       → 07-camera-calibration.pdf
-├── 08_dnn/           → 08-deep-learning-inference.pdf
-├── 09_ml/            → 09-machine-learning.pdf
-├── 10_photo/         → 10-computational-photography.pdf
-└── 11_stitching/     → 11-image-stitching.pdf
+├── 07_ml/            → 07-machine-learning.pdf (4 tutorials)
+├── 08_dnn/           → 08-deep-learning.pdf (3 tutorials)
+├── 09_mcmot/         → 09-multi-object-tracking.pdf (5 tutorials)
+├── 10_calib3d/       → 10-3d-vision.pdf (5 tutorials)
+└── 11_stitching/     → 11-image-stitching.pdf (4 tutorials)
 ```
 
 See the [Modules](/modules) section for detailed documentation of each module.

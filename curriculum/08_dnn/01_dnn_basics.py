@@ -15,6 +15,12 @@ Topics Covered:
 
 import cv2
 import numpy as np
+import os
+import sys
+
+# Add parent directory to path for sample_data import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sample_data import get_image
 
 print("=" * 60)
 print("Module 8: Deep Learning with OpenCV DNN")
@@ -62,10 +68,30 @@ print(overview)
 # =============================================================================
 print("\n--- 2. Blob Preparation ---")
 
-# Create test image
-test_img = np.zeros((480, 640, 3), dtype=np.uint8)
-cv2.rectangle(test_img, (200, 150), (440, 330), (0, 255, 0), -1)
-cv2.circle(test_img, (320, 240), 50, (255, 0, 0), -1)
+
+def load_dnn_test_image():
+    """Load a real image for DNN demo or create fallback."""
+    # Try to load real images - prefer images with faces for face detection demo
+    # OpenCV samples:
+    # - messi5.jpg: person with face (for face detection)
+    # - lena.jpg: classic face image
+    # - fruits.jpg: food items (for classification)
+    for sample in ["messi5.jpg", "lena.jpg", "fruits.jpg", "baboon.jpg"]:
+        img = get_image(sample)
+        if img is not None:
+            print(f"Using sample image: {sample}")
+            return cv2.resize(img, (640, 480))
+
+    # Fallback: Create test image
+    print("No sample image found. Using synthetic image.")
+    print("Run: python curriculum/sample_data/download_samples.py")
+    img = np.zeros((480, 640, 3), dtype=np.uint8)
+    cv2.rectangle(img, (200, 150), (440, 330), (0, 255, 0), -1)
+    cv2.circle(img, (320, 240), 50, (255, 0, 0), -1)
+    return img
+
+
+test_img = load_dnn_test_image()
 
 # Convert image to blob
 # blobFromImage parameters:
@@ -324,32 +350,131 @@ print(performance_tips)
 
 
 # =============================================================================
-# VISUALIZATION
+# 9. DOWNLOAD MODEL FILES (YOLOv3-tiny)
+# =============================================================================
+print("\n--- 9. Model Download ---")
+
+import urllib.request
+
+MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
+os.makedirs(MODEL_DIR, exist_ok=True)
+
+# YOLOv3-tiny - fast and lightweight
+YOLO_CFG = "https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3-tiny.cfg"
+YOLO_WEIGHTS = "https://pjreddie.com/media/files/yolov3-tiny.weights"
+COCO_NAMES = "https://raw.githubusercontent.com/pjreddie/darknet/master/data/coco.names"
+
+
+def download_model(url, filename):
+    """Download model file if not exists."""
+    filepath = os.path.join(MODEL_DIR, filename)
+    if os.path.exists(filepath):
+        return filepath
+    try:
+        print(f"Downloading {filename}...")
+        urllib.request.urlretrieve(url, filepath)
+        print(f"  Downloaded: {filename}")
+        return filepath
+    except Exception as e:
+        print(f"  Failed to download {filename}: {e}")
+        return None
+
+
+# =============================================================================
+# VISUALIZATION WITH ACTUAL INFERENCE (YOLO)
 # =============================================================================
 def show_demo():
-    """Display DNN module concepts."""
+    """Display DNN module with YOLO object detection."""
 
-    # Show blob visualization
-    # Reshape blob back to image for visualization
-    blob_vis = blob[0].transpose(1, 2, 0)  # CHW -> HWC
-    blob_vis = (blob_vis * 255).astype(np.uint8)
-    blob_vis = cv2.cvtColor(blob_vis, cv2.COLOR_RGB2BGR)
+    result_img = test_img.copy()
 
-    # Display
-    display = np.hstack([
-        cv2.resize(test_img, (224, 224)),
-        blob_vis
-    ])
+    # Download YOLO model
+    cfg_path = download_model(YOLO_CFG, "yolov3-tiny.cfg")
+    weights_path = download_model(YOLO_WEIGHTS, "yolov3-tiny.weights")
+    names_path = download_model(COCO_NAMES, "coco.names")
 
-    cv2.putText(display, "Original", (10, 20),
-               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
-    cv2.putText(display, "Blob", (234, 20),
-               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+    if cfg_path and weights_path and names_path:
+        print("\nRunning YOLO Object Detection...")
 
-    cv2.imshow("Blob Preparation", display)
+        # Load class names
+        with open(names_path, 'r') as f:
+            classes = [line.strip() for line in f.readlines()]
 
-    print("\nNote: This demo shows blob preparation concepts.")
-    print("For actual inference, you need to download model files.")
+        # Load network
+        net = cv2.dnn.readNetFromDarknet(cfg_path, weights_path)
+        net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+        net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+
+        # Get output layers
+        layer_names = net.getLayerNames()
+        output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
+
+        # Prepare input blob
+        h, w = test_img.shape[:2]
+        input_blob = cv2.dnn.blobFromImage(
+            test_img, 1/255.0, (416, 416), swapRB=True, crop=False
+        )
+
+        # Run inference
+        net.setInput(input_blob)
+        outputs = net.forward(output_layers)
+
+        # Get inference time
+        t, _ = net.getPerfProfile()
+        inference_time = t * 1000.0 / cv2.getTickFrequency()
+        print(f"  Inference time: {inference_time:.2f} ms")
+
+        # Process detections
+        boxes, confidences, class_ids = [], [], []
+        for output in outputs:
+            for detection in output:
+                scores = detection[5:]
+                class_id = np.argmax(scores)
+                confidence = scores[class_id]
+                if confidence > 0.4:
+                    center_x = int(detection[0] * w)
+                    center_y = int(detection[1] * h)
+                    box_w = int(detection[2] * w)
+                    box_h = int(detection[3] * h)
+                    x1 = int(center_x - box_w / 2)
+                    y1 = int(center_y - box_h / 2)
+                    boxes.append([x1, y1, box_w, box_h])
+                    confidences.append(float(confidence))
+                    class_ids.append(class_id)
+
+        # Apply NMS
+        indices = cv2.dnn.NMSBoxes(boxes, confidences, 0.4, 0.4)
+
+        # Draw detections
+        colors = np.random.uniform(0, 255, size=(len(classes), 3))
+        num_objects = 0
+        for i in indices:
+            idx = i[0] if isinstance(i, (list, np.ndarray)) else i
+            x1, y1, bw, bh = boxes[idx]
+            label = f"{classes[class_ids[idx]]}: {confidences[idx]:.0%}"
+            color = [int(c) for c in colors[class_ids[idx]]]
+            cv2.rectangle(result_img, (x1, y1), (x1+bw, y1+bh), color, 2)
+            cv2.putText(result_img, label, (x1, y1-5),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            num_objects += 1
+
+        print(f"  Objects detected: {num_objects}")
+
+        # Add info overlay
+        cv2.putText(result_img, f"YOLOv3-tiny Object Detection", (10, 25),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        cv2.putText(result_img, f"Inference: {inference_time:.1f}ms", (10, 50),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+        cv2.putText(result_img, f"Objects: {num_objects}", (10, 70),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+    else:
+        print("\nModel files not available. Showing input only.")
+        cv2.putText(result_img, "Model not loaded", (10, 30),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+    # Display results
+    cv2.imshow("DNN Inference Result", result_img)
+
     print("\nPress any key to close...")
     cv2.waitKey(0)
     cv2.destroyAllWindows()
